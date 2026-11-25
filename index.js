@@ -632,21 +632,21 @@
         method: 'GET',
       });
 
-      const data = await response.json();
+      const res = await response.json();
 
       //console.log("[GET] response data =", data);
 
-      if (data.data && data.data.length > 0) {    
+      if (res.status === 'success') {    
 
        
-        //console.log("[GET] status =", data.status);
+        console.log("[GET] status =", res.status);
         //console.log("[GET] message =", data.message);
         //console.log("[GET] req_id =", data.req_id);
         //console.log("[GET] token_found =", data.token_found);
         //console.log("[GET] token_match =", data.token_match);
         //console.log("[GET] found_row =", data.found_row);
 
-        Swal.fire({
+        await Swal.fire({
           position: 'center',
           icon: 'success',
           text: 'ลิงก์ web ถูกต้อง',
