@@ -35,15 +35,19 @@ export default {
       };
 
       if (request.method === "POST") {
-        const contentType = request.headers.get("Content-Type");
+        const form = await request.formData();
+        const action = form.get("action");
+        const data = form.get("data");
 
-        if (contentType) {
-            options.headers = { "Content-Type": contentType };
+        if (typeof action !== "string" || typeof data !== "string") {
+            return errorResponse(400, "POST ต้องมีช่อง action และ data");
         }
 
-        // อ่าน body เป็น bytes ก่อนส่ง เพื่อให้ fetch ส่งซ้ำได้หาก redirect ต้องใช้ body เดิม
-        options.body = await request.arrayBuffer();
-      }
+        options.headers = {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+        };
+        options.body = new URLSearchParams({ action, data }).toString();
+    }
 
     const response = await fetch(gasUrl, options);
     const contentType = response.headers.get("Content-Type") || "";
