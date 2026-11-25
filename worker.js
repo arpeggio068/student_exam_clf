@@ -45,12 +45,24 @@ export default {
         options.body = await request.arrayBuffer();
       }
 
-      const response = await fetch(gasUrl, options);
-      const contentType = response.headers.get("Content-Type") || "";
+    const response = await fetch(gasUrl, options);
+    const contentType = response.headers.get("Content-Type") || "";
 
-      if (!response.ok || !contentType.includes("application/json")) {
-        return errorResponse(502, "GAS ไม่ได้ส่งผลตอบกลับเป็น JSON ที่ใช้งานได้");
-      }
+    if (!response.ok || !/^application\/json\b/i.test(contentType)) {
+        const mimeType = contentType.split(";")[0] || "unknown";
+
+        console.warn("GAS response rejected", {
+            method: request.method,
+            upstreamStatus: response.status,
+            mimeType,
+            redirected: response.redirected
+        });
+
+        return errorResponse(
+            502,
+            `GAS ตอบ HTTP ${response.status}, Content-Type: ${mimeType}`
+        );
+    }
 
       return new Response(response.body, {
         status: response.status,
