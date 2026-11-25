@@ -59,8 +59,13 @@ export default {
           "Cache-Control": "no-store"
         }
       });
-    } catch {
-      return errorResponse(502, "Worker ติดต่อ GAS ไม่สำเร็จ");
+    } catch (err) {
+    const detail = String(err?.message ?? err)
+        .replace(/https?:\/\/[^\s"'<>]+/gi, "[URL]")
+        .replace(/token-[A-Za-z0-9_-]+/gi, "[TOKEN]");
+
+    console.error("GAS proxy failed", request.method, err?.name, detail);
+    return errorResponse(502, "Worker ติดต่อ GAS ไม่สำเร็จ");
     }
   }
 };
