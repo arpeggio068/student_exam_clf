@@ -2,6 +2,7 @@
   "name": "student-exam-clf",
   "main": "worker.js",
   "compatibility_date": "2026-11-25",
+  "keep_vars": true,
   "assets": {
     "directory": ".",
     "binding": "ASSETS",
