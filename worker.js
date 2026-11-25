@@ -35,12 +35,14 @@ export default {
       };
 
       if (request.method === "POST") {
-        // ส่ง FormData เดิม รวม action และ data ไปยัง GAS
         const contentType = request.headers.get("Content-Type");
+
         if (contentType) {
-          options.headers = { "Content-Type": contentType };
+            options.headers = { "Content-Type": contentType };
         }
-        options.body = request.body;
+
+        // อ่าน body เป็น bytes ก่อนส่ง เพื่อให้ fetch ส่งซ้ำได้หาก redirect ต้องใช้ body เดิม
+        options.body = await request.arrayBuffer();
       }
 
       const response = await fetch(gasUrl, options);
